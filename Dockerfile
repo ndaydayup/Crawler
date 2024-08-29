@@ -4,6 +4,8 @@ WORKDIR /app
 
 COPY requirements.txt .
 
+RUN pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+
 RUN apt-get update && apt-get install -y \
     gcc \
     g++ \
