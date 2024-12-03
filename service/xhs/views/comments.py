@@ -5,7 +5,7 @@ from lib.logger import logger
 from ..logic import request_comments
 import random
 
-async def comments(id: str, offset: int = 0, limit: int = 20):
+async def comments(id: str, xsctoken: str, offset: int = 0, limit: int = 20):
     """
     获取笔记评论
     """
@@ -15,11 +15,12 @@ async def comments(id: str, offset: int = 0, limit: int = 20):
         if account.get('expired', 0) == 1:
             continue
         account_id = account.get('id', '')
-        res, succ = await request_comments(id, account.get('cookie', ''), offset, limit)
+        xsctoken = account.get('xsctoken', '')
+        res, succ = await request_comments(id, xsctoken, account.get('cookie', ''), offset, limit)
         if res == {} or not succ:
-            logger.error(f'get comments failed, account: {account_id} id: {id}, offset: {offset}, limit: {limit}')
+            logger.error(f'get comments failed, account: {account_id} id: {id}, xsctoken: {xsctoken}, offset: {offset}, limit: {limit}')
             continue
-        logger.info(f'get comments success, account: {account_id}, id: {id}, offset: {offset}, limit: {limit},  res: {res}')
+        logger.info(f'get comments success, account: {account_id}, id: {id}, xsctoken: {xsctoken}, offset: {offset}, limit: {limit},  res: {res}')
         return reply(ErrorCode.OK, '成功' , res)
-    logger.warning(f'get comments failed. id: {id}, offse: {offset}, limit: {limit}')
+    logger.warning(f'get comments failed. id: {id}, xsctoken: {xsctoken}, offse: {offset}, limit: {limit}')
     return reply(ErrorCode.NO_ACCOUNT, '请先添加账号')
